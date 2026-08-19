@@ -46,8 +46,8 @@ $$
 that sum. Here `opensOf τ` is the set of `τ`-open sets (so
 `ncard (opensOf τ)` is `|τ|`) and `minimalBasis τ` is `M_τ`.
 
-No extra hypothesis is imposed on `α` beyond finiteness and decidable
-equality. The empty type is included. The compared theorem depends on
+The compared theorem is parameterized by `[Fintype α]` only (`DecidableEq`
+is omitted, as in `CARDB.lean`). The empty type is included. It depends on
 `propext`, `Classical.choice` and `Quot.sound` only.
 
 ## How to read this file
@@ -104,6 +104,7 @@ abbrev minimalOpen (x : α) : Set α :=
 def minimalBasis : Set (Set α) :=
   range (minimalOpen t)
 
+omit [DecidableEq α] in
 /-- **Main theorem.** The number of topological bases on a finite type `α`
     equals the sum, over all topologies `τ` on `α`, of
     `2^(|τ| − |M_τ|)`, where `M_τ` is the canonical minimal basis of
