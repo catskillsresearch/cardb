@@ -71,12 +71,15 @@ sources:
     authors: ["Lars Warren Ericson"]
     type: "original-proof"
     id: "https://github.com/catskillsresearch/cardb/blob/main/CARDB.md"
-    relationship: formalizes
+    relationship: other
     author_endorsement: participated
     note: >-
-      The informal note in this repository: definitions, the fiber lemma,
-      the exact sum, a small-N table, and the asymptotic remarks. Challenge.lean
-      is checked against the identity boxed in that note.
+      Original write-up in this repository, not an external source being
+      formalized. Relationship is `other` because Palomar reserves
+      `formalizes` for following an existing source. The note carries the
+      definitions, the fiber lemma, the exact sum, a small-N table, and the
+      asymptotic remarks. Challenge.lean is checked against the identity
+      boxed in that note.
 
   - title: "Diskrete Räume"
     authors: ["P. Alexandrov"]
