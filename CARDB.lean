@@ -42,16 +42,16 @@ theorem opensOf_injective :
     Function.Injective (opensOf : TopologicalSpace α → Set (Set α)) :=
   leftInverse_generateFrom.injective
 
-noncomputable instance : DecidableEq (TopologicalSpace α) :=
+noncomputable instance instDecidableEqTopologicalSpace : DecidableEq (TopologicalSpace α) :=
   opensOf_injective.decidableEq
 
-noncomputable instance : Fintype (TopologicalSpace α) :=
+noncomputable instance instFintypeTopologicalSpace : Fintype (TopologicalSpace α) :=
   Fintype.ofInjective opensOf opensOf_injective
 
-noncomputable instance : DecidablePred (IsBasis : Set (Set α) → Prop) :=
+noncomputable instance instDecidablePredIsBasis : DecidablePred (IsBasis : Set (Set α) → Prop) :=
   fun _ => Classical.dec _
 
-noncomputable instance : Fintype (ValidBasis α) :=
+noncomputable instance instFintypeValidBasis : Fintype (ValidBasis α) :=
   Subtype.fintype _
 
 variable (t : TopologicalSpace α)
