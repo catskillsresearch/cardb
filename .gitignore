@@ -1,0 +1,20 @@
+# Lake / Lean
+.lake/
+
+# Python
+__pycache__/
+*.pyc
+
+# Generated TeX (the PDF is the committed deliverable)
+CARDB.tex
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.toc
+*.lof
+*.synctex.gz
+texput.log

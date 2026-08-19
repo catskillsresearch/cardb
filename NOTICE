@@ -1,0 +1,36 @@
+CARDB
+Copyright 2026 Lars Warren Ericson
+
+This product is licensed under the Apache License, Version 2.0.
+See the file LICENSE for the full text.
+
+This repository was split from the standalone CARDB package in
+https://github.com/catskillsresearch/scott_models
+(directory CARDB/, Apache License 2.0).
+
+-----------------------------------------------------------------------------
+Third-party notices
+-----------------------------------------------------------------------------
+
+Mathlib4
+Copyright (c) the Lean mathematical community
+Licensed under the Apache License, Version 2.0.
+https://github.com/leanprover-community/mathlib4
+Fetched by Lake at the revision pinned in lake-manifest.json.
+The Mathlib sources are not vendored in this repository.
+
+Lean 4
+Copyright (c) Lean FRO, LLC
+Licensed under the Apache License, Version 2.0.
+https://github.com/leanprover/lean4
+The Lean toolchain pin is lean-toolchain (leanprover/lean4:v4.30.0).
+
+PDF build preamble
+scripts/tex_preamble_arxiv.tex is adapted from
+https://github.com/catskillsresearch/scott_models/blob/main/scripts/tex_preamble_arxiv.tex
+(Apache License 2.0). The listings literate table and unicode declarations
+originated in that file; extra glyphs used only by this note are added by
+build_pdf.py.
+
+build_pdf.py is adapted from the scott_models CARDB / LRSODInCIC PDF pipeline
+(Apache License 2.0).
