@@ -1,0 +1,241 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "The number of topological bases of a finite set"
+  description: >-
+    A Lean formalization of an exact enumeration identity: for a finite type
+    α, the number of families B ⊆ Set α that are topological bases equals
+    the sum, over all topologies τ on α, of 2^(|τ| − |M_τ|), where M_τ is
+    the canonical minimal basis of minimal open neighbourhoods (Mathlib's
+    nhdsKer {x} at each point). The argument is a fiber decomposition:
+    every finite topology is Alexandrov-discrete, the minimal neighbourhoods
+    generate it, and the bases generating τ are exactly the families B with
+    M_τ ⊆ B ⊆ {U | τ.IsOpen U}. The informal account is the companion note
+    CARDB.md in this repository. The Lean source was written by AI agents
+    under the direction and review of the author. There is no sorry outside
+    the deliberate hole in Challenge.lean, no project-defined axiom, and
+    Mathlib is the only Lake dependency.
+  authors:
+    - "Lars Warren Ericson"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Lars Warren Ericson"
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.GN, math.CO]
+  msc2020: ["54A05", "05A15", "54A10"]
+
+status:
+  scope: >-
+    Complete, with no unproved step. The identity is stated and proved for
+    every finite type α with decidable equality, including the empty type.
+    Nothing is assumed from the literature; the compared theorem is proved
+    from Mathlib alone.
+  # The proof development contains no sorry at all. The only sorry in the
+  # repository is the deliberate placeholder in Challenge.lean, which these
+  # counts exclude by convention.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Classical.choice", "Quot.sound"]
+  main_results:
+    - declaration: "card_valid_bases"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
+
+fidelity:
+  divergences: >-
+    The informal note speaks of a finite set S with |S| = N and writes
+    #(N) for the count. The Lean statement is for an arbitrary finite type
+    α; N is Fintype.card α and is not an explicit parameter. Informal
+    gen(B) is Mathlib's generateFrom B; informal |τ| is ncard (opensOf τ);
+    informal U_x is nhdsKer {x} (minimalOpen). The note's N = 0 row is
+    included: the empty type is not excluded. Lemma names in CARDB.lean
+    follow the note's development rather than a published paper.
+
+# ---------------------------------------------------------------------------
+# Mathematical sources.
+#
+# The identity is presented in the companion note CARDB.md in this
+# repository. Alexandrov discreteness of finite spaces is classical
+# background; the fiber count itself is not taken from a prior paper.
+# ---------------------------------------------------------------------------
+sources:
+  - title: "On the Number of Distinct Topological Bases of a Finite Set of Size N"
+    authors: ["Lars Warren Ericson"]
+    type: "original-proof"
+    id: "https://github.com/catskillsresearch/cardb/blob/main/CARDB.md"
+    relationship: formalizes
+    author_endorsement: participated
+    note: >-
+      The informal note in this repository: definitions, the fiber lemma,
+      the exact sum, a small-N table, and the asymptotic remarks. Challenge.lean
+      is checked against the identity boxed in that note.
+
+  - title: "Diskrete Räume"
+    authors: ["P. Alexandrov"]
+    type: "article"
+    location: "Matematicheskii Sbornik 2(3) (1937), 501–519"
+    relationship: background
+    note: >-
+      Finite topological spaces are Alexandrov-discrete, so each point has
+      a minimal open neighbourhood. Used as the classical justification for
+      taking M_τ to be {nhdsKer {x} | x ∈ α}. The formalization uses
+      Mathlib's AlexandrovDiscrete and isOpen_nhdsKer rather than
+      transcribing this paper.
+
+  - title: "Topology on finite sets"
+    authors: ["D. Stephen"]
+    type: "article"
+    location: "The American Mathematical Monthly 75(7) (1968), 739–741"
+    relationship: background
+    note: >-
+      Standard facts on topologies on a finite set, used in the informal
+      note for bounds on |τ|. Not used as a lemma in the Lean proof of
+      card_valid_bases.
+
+  - title: "The number of topologies on a finite set"
+    authors: ["M. Benoumhani"]
+    type: "article"
+    id: "https://cs.uwaterloo.ca/journals/JIS/VOL9/Benoumhani/benoumhani6.pdf"
+    location: "Journal of Integer Sequences 9(2) (2006), Article 06.2.6"
+    relationship: background
+    note: >-
+      Enumeration of finite topologies (OEIS A000798). Background for the
+      informal note's comparison with |Top(S)|; the compared theorem counts
+      bases, not topologies.
+
+related_formalizations: []
+
+# ---------------------------------------------------------------------------
+# How this was produced.
+# ---------------------------------------------------------------------------
+automation:
+  methods:
+    - method: agent
+      models: ["Cursor Grok 4.6 High Fast (SpaceXAI / Cursor)"]
+      framework: "Cursor"
+      role: >-
+        Primary agent for the Lean 4 / Mathlib formalization of the fiber
+        identity (CARDB.lean), lake build repair, and drafting of CARDB.md.
+        Used in the Cursor agent environment at the High reasoning tier and
+        Fast speed variant. Generated Lean was provisional until it compiled
+        under the pinned toolchain (leanprover/lean4:v4.30.0).
+    - method: agent
+      models: ["Claude Sonnet 5 (Anthropic)"]
+      framework: "Cursor"
+      role: >-
+        Initial Lean sketch of the fiber identity (IsBasis, ValidBasis,
+        fiberEquiv, and the sum over topologies) and an early point-set
+        write-up of the Alexandrov minimal-neighbourhood argument. The
+        sketch was unchecked; subsequent agents repaired it to a sorry-free
+        Mathlib formalization under the pinned toolchain.
+    - method: agent
+      models: ["Gemini 3.7 Flash (Google DeepMind)"]
+      framework: "Cursor"
+      role: >-
+        Exploratory and parallel passes on the same combinatorial / point-set
+        material (basis axioms, Alexandrov minimal neighbourhoods, and the
+        finite-enumeration identity).
+    - method: manual
+      models: []
+      role: >-
+        The author chose the formalization route, reviewed every definition
+        and claim, and takes sole responsibility for the mathematical
+        content. No large language model is listed as a co-author.
+  notes: >-
+    All three named models were used in the Cursor agent environment. None
+    has an official Hugging Face model card; citations are in CARDB.md.
+    Palomar Challenge / Solution / comparator / formalization.yaml packaging
+    was added later by an agent under the author's direction.
+
+review:
+  status: self-assessed
+  reviewers:
+    - "Lars Warren Ericson"
+  notes: >-
+    The author directed and reviewed the development as it was produced. No
+    external or independent review has been performed, and no mathematician
+    other than the author has read the Lean source. Every step of
+    card_valid_bases is checked by Lean against Mathlib.
+
+known_gaps: []
+
+limitations:
+  - >-
+    No novelty is claimed, and no literature or formalization search was
+    performed. The identity is presented in the companion note CARDB.md;
+    whether an equivalent count appears elsewhere is unknown.
+  - >-
+    The compared theorem depends on propext, Classical.choice and Quot.sound,
+    and on nothing else. Choice enters because IsOpen is not a decidable
+    predicate, so the Fintype instances on topologies and the fiber-cardinality
+    argument use it. There is no sorry outside the deliberate hole in
+    Challenge.lean, no project-defined axiom, and no native_decide.
+  - >-
+    Challenge.lean states the result but does not prove it; that is the
+    Comparator convention, and Solution.lean / CARDB.lean supply the proof.
+
+alignment:
+  namespace: ""
+  statements:
+    - source: "The exact identity #(S) = ∑_τ 2^(|τ| − |M_τ|), as boxed in CARDB.md"
+      lean: "card_valid_bases"
+      module: "Challenge (statement), Solution / CARDB (proof)"
+      status: proved
+      note: >-
+        The statement of record, compared by Comparator. Challenge.lean states
+        it with a sorry; CARDB.lean discharges it from the fiber equivalence
+        and the partition of ValidBasis by generateFrom.
+
+    - source: "A family is a basis iff it covers and satisfies the local intersection axiom (CARDB.md, Introduction)"
+      lean: "IsBasis"
+      module: "Challenge (statement), CARDB (definition)"
+      status: proved
+      note: >-
+        Mathlib's IsTopologicalBasis without eq_generateFrom. Compared as a
+        definition.
+
+    - source: "The objects counted are the families satisfying the basis axioms"
+      lean: "ValidBasis"
+      module: "Challenge (statement), CARDB (definition)"
+      status: proved
+      note: "Subtype of Set (Set α) cut out by IsBasis."
+
+    - source: "Open sets of a topology; |τ| in the informal sum"
+      lean: "opensOf"
+      module: "Challenge (statement), CARDB (definition)"
+      status: proved
+      note: "{U | τ.IsOpen U}. Injectivity of this map is opensOf_injective."
+
+    - source: "Minimal open neighbourhood U_x of a point"
+      lean: "minimalOpen"
+      module: "Challenge (statement), CARDB (definition)"
+      status: proved
+      note: "Mathlib nhdsKer {x} at topology τ."
+
+    - source: "The canonical minimal basis M_τ = {U_x | x ∈ S}"
+      lean: "minimalBasis"
+      module: "Challenge (statement), CARDB (definition)"
+      status: proved
+      note: "range (minimalOpen τ)."
+
+    - source: "Bases generating τ are exactly M_τ ⊆ B ⊆ τ (CARDB.md, Structural Decomposition)"
+      lean: "isBasis_and_generates_iff"
+      module: "CARDB"
+      status: proved
+      note: >-
+        Core lemma of the fiber count. Not a Comparator-compared declaration;
+        used in the proof of card_valid_bases.
+
+    - source: "The fiber over τ has size 2^(|τ| − |M_τ|)"
+      lean: "card_fiber"
+      module: "CARDB"
+      status: proved
+      note: "From fiberEquiv; summed in card_valid_bases."

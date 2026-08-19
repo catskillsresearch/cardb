@@ -1,0 +1,15 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "card_valid_bases"
+  ],
+  "definition_names": [
+    "IsBasis",
+    "ValidBasis",
+    "opensOf",
+    "minimalOpen",
+    "minimalBasis"
+  ],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]
+}

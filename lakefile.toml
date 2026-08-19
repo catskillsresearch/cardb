@@ -1,9 +1,10 @@
 name = "CARDB"
 version = "0.1.0"
 keywords = ["topology", "combinatorics", "lean4"]
-defaultTargets = ["CARDB"]
+defaultTargets = ["CARDB", "Challenge", "Solution"]
 
 # Standalone Lake package: Mathlib only.
+# Challenge / Solution are the Palomar Comparator pair; CARDB is the proof.
 
 [leanOptions]
 pp.unicode.fun = true
@@ -16,3 +17,9 @@ rev = "v4.30.0"
 
 [[lean_lib]]
 name = "CARDB"
+
+[[lean_lib]]
+name = "Challenge"
+
+[[lean_lib]]
+name = "Solution"

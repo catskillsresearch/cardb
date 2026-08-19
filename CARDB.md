@@ -393,6 +393,9 @@ full responsibility for them.
 The development is at
 [`github.com/catskillsresearch/cardb`](https://github.com/catskillsresearch/cardb).
 Run `lake build` for the sorry-free formalization.
+`Challenge.lean` is the Palomar statement of record for `card_valid_bases`
+(Mathlib imports only; one deliberate `sorry`); `Solution.lean` imports this file;
+`comparator.json` and `formalization.yaml` are the Comparator and disclosure metadata.
 Run `python3 build_pdf.py` to regenerate `CARDB.tex` and `CARDB.pdf` (title page, author, affiliation, and this GitHub path).
 
 ---

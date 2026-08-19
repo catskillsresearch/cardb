@@ -23,6 +23,10 @@ This repository was split from
 |---|---|
 | `CARDB.md` | Paper (identity, fiber lemma, small-\(N\) table) — the source of truth |
 | `CARDB.lean` | Sorry-free formalization of the sum identity |
+| `Challenge.lean` | Palomar statement of record: `card_valid_bases` with a deliberate `sorry` |
+| `Solution.lean` | Palomar solution module: imports `CARDB` (the proved declaration) |
+| `comparator.json` | Comparator config naming `card_valid_bases` and its supporting definitions |
+| `formalization.yaml` | Palomar / formalization.yaml v0.4 metadata and disclosures |
 | `CARDB.pdf` | Built paper (committed deliverable) |
 | `build_pdf.py` | `CARDB.md` → `CARDB.tex` → `CARDB.pdf`, Lean source inlined as an appendix |
 | `scripts/tex_preamble_arxiv.tex` | Listings / unicode preamble used by the PDF build |
@@ -43,7 +47,15 @@ lake build
 ```
 
 Open `CARDB.lean` in this repository so the Lean server uses this package's
-`lakefile.toml`.
+`lakefile.toml`. `lake build` also typechecks `Challenge.lean` and
+`Solution.lean`.
+
+`Challenge.lean` is the statement of record:  it imports only Mathlib,
+declares the definitions the identity uses, and leaves `card_valid_bases`
+as a `sorry`. A reader who wants to check *what* has been proved should
+read that file. The proof is `CARDB.lean`, exposed to Comparator through
+`Solution.lean`. The compared theorem uses `propext`, `Classical.choice`
+and `Quot.sound` only.
 
 ## Build the paper
 
