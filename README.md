@@ -21,11 +21,13 @@ This repository was split from
 
 | File | Role |
 |---|---|
-| `CARDB.md` | Paper (identity, fiber lemma, small-\(N\) table) — the source of truth |
+| `CARDB.md` | Paper (identity, fiber lemma, small-\(N\) table, bounds) — the source of truth |
 | `CARDB.lean` | Sorry-free formalization of the sum identity |
-| `Challenge.lean` | Palomar statement of record: `card_valid_bases` with a deliberate `sorry` |
-| `Solution.lean` | Palomar solution module: imports `CARDB` (the proved declaration) |
-| `comparator.json` | Comparator config naming `card_valid_bases` and its supporting definitions |
+| `CARDB/SmallN.lean` | Exact table `#(0)=2`, `#(1)=2`, `#(2)=10`, `#(3)=142` |
+| `CARDB/Asymptotics.lean` | Sandwich bound and discrete dominance for \(N\ge 10\) |
+| `Challenge.lean` | Palomar statement of record: the compared family with deliberate `sorry`s |
+| `Solution.lean` | Palomar solution module: imports `CARDB`, `CARDB.SmallN`, `CARDB.Asymptotics` |
+| `comparator.json` | Comparator config naming the four theorems and supporting definitions |
 | `formalization.yaml` | Palomar / formalization.yaml v0.4 metadata and disclosures |
 | `CARDB.pdf` | Built paper (committed deliverable) |
 | `build_pdf.py` | `CARDB.md` → `CARDB.tex` → `CARDB.pdf`, Lean source inlined as an appendix |
@@ -51,10 +53,11 @@ Open `CARDB.lean` in this repository so the Lean server uses this package's
 `Solution.lean`.
 
 `Challenge.lean` is the statement of record:  it imports only Mathlib,
-declares the definitions the identity uses, and leaves `card_valid_bases`
-as a `sorry`. A reader who wants to check *what* has been proved should
-read that file. The proof is `CARDB.lean`, exposed to Comparator through
-`Solution.lean`. The compared theorem uses `propext`, `Classical.choice`
+declares the definitions the family uses, and leaves the four compared
+theorems as `sorry`. A reader who wants to check *what* has been proved
+should read that file. The proofs are `CARDB.lean`, `CARDB/SmallN.lean`
+and `CARDB/Asymptotics.lean`, exposed to Comparator through
+`Solution.lean`. The compared theorems use `propext`, `Classical.choice`
 and `Quot.sound` only.
 
 ## Build the paper

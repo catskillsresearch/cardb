@@ -26,6 +26,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 SRC = HERE / "CARDB.md"
 LEAN = HERE / "CARDB.lean"
+LEAN_SMALLN = HERE / "CARDB" / "SmallN.lean"
+LEAN_ASYMP = HERE / "CARDB" / "Asymptotics.lean"
 OUT_TEX = HERE / "CARDB.tex"
 OUT_PDF = HERE / "CARDB.pdf"
 PREAMBLE = HERE / "scripts" / "tex_preamble_arxiv.tex"
@@ -39,6 +41,10 @@ EMAIL = "lars.ericson@catskillsresearch.com"
 EXTRA_LITERATE = r"""    {ä}{{\"{a}}}1
     {é}{{\'{e}}}1
     {∑}{{\ensuremath{\sum}}}1
+    {‹}{{`}}1
+    {›}{{'}}1
+    {∈}{{\ensuremath{\in}}}1
+    {·}{{\ensuremath{\cdot}}}1
 """
 
 EXTRA_UNICODECHAR = r"""
@@ -46,6 +52,10 @@ EXTRA_UNICODECHAR = r"""
 \newunicodechar{ä}{\"{a}}
 \newunicodechar{é}{\'{e}}
 \newunicodechar{∑}{\ensuremath{\sum}}
+\newunicodechar{‹}{`}
+\newunicodechar{›}{'}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{·}{\ensuremath{\cdot}}
 \newunicodechar{⦃}{\textbraceleft\textbraceleft}
 \newunicodechar{⦄}{\textbraceright\textbraceright}
 """
@@ -163,20 +173,44 @@ def build_title_page(title_tex: str, abstract_tex: str) -> str:
     )
 
 
+def listing_block(path: Path, caption: str) -> str:
+    rel = path.relative_to(HERE).as_posix()
+    n_lines = len(path.read_text(encoding="utf-8").splitlines())
+    return "\n".join(
+        [
+            f"\\subsection{{\\texttt{{{rel}}}}}",
+            "",
+            f"{caption} ({n_lines} lines).",
+            "",
+            r"\lstinputlisting{" + rel + "}",
+        ]
+    )
+
+
 def build_appendix() -> str:
-    n_lines = len(LEAN.read_text(encoding="utf-8").splitlines())
     return "\n".join(
         [
             r"\appendix",
             r"\section{Complete Lean source}",
             "",
-            f"\\texttt{{{LEAN.name}}} in full ({n_lines} lines), checked by "
-            r"\texttt{lake build} against Lean 4 and Mathlib. "
-            r"The fiber lemma and the sum identity of Section~3 are proved here; "
-            r"\texttt{\#print axioms card\_valid\_bases} reports "
+            r"Checked by \texttt{lake build} against Lean 4 and Mathlib. "
+            r"\texttt{\#print axioms} on each compared theorem reports "
             r"$\{\mathtt{propext},\ \mathtt{Classical.choice},\ \mathtt{Quot.sound}\}$.",
             "",
-            r"\lstinputlisting{" + LEAN.name + "}",
+            listing_block(
+                LEAN,
+                r"The fiber lemma and the sum identity of Section~3",
+            ),
+            "",
+            listing_block(
+                LEAN_SMALLN,
+                r"Kernel-reducible enumeration of the small-$N$ table",
+            ),
+            "",
+            listing_block(
+                LEAN_ASYMP,
+                r"The sandwich bound and discrete dominance for $N\ge 10$",
+            ),
         ]
     )
 
@@ -214,6 +248,8 @@ def main() -> int:
         cwd=HERE,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         check=False,
     )
     if proc.returncode != 0 or not OUT_PDF.is_file():

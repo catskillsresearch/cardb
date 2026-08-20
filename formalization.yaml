@@ -4,18 +4,24 @@ version: "v0.4"
 project:
   name: "The number of topological bases of a finite set"
   description: >-
-    A Lean formalization of an exact enumeration identity: for a finite type
-    α, the number of families B ⊆ Set α that are topological bases equals
-    the sum, over all topologies τ on α, of 2^(|τ| − |M_τ|), where M_τ is
-    the canonical minimal basis of minimal open neighbourhoods (Mathlib's
-    nhdsKer {x} at each point). The argument is a fiber decomposition:
-    every finite topology is Alexandrov-discrete, the minimal neighbourhoods
-    generate it, and the bases generating τ are exactly the families B with
-    M_τ ⊆ B ⊆ {U | τ.IsOpen U}. The informal account is the companion note
-    CARDB.md in this repository. The Lean source was written by AI agents
-    under the direction and review of the author. There is no sorry outside
-    the deliberate hole in Challenge.lean, no project-defined axiom, and
-    Mathlib is the only Lake dependency.
+    A Lean formalization of an exact enumeration identity and two
+    consequences: for a finite type α, the number of families B ⊆ Set α
+    that are topological bases equals the sum, over all topologies τ on α,
+    of 2^(|τ| − |M_τ|), where M_τ is the canonical minimal basis of
+    minimal open neighbourhoods (Mathlib's nhdsKer {x} at each point).
+    Kernel-reducible enumeration gives the exact table #(0)=2, #(1)=2,
+    #(2)=10, #(3)=142. A quantitative sandwich then shows that the
+    discrete fiber 2^(2^N − N) dominates: for N ≥ 2 the remaining fibers
+    contribute at most 2^(N^2 + 3·2^(N−2)), and for N ≥ 10 the total is
+    at most twice the discrete term. The argument is a fiber
+    decomposition: every finite topology is Alexandrov-discrete, the
+    minimal neighbourhoods generate it, and the bases generating τ are
+    exactly the families B with M_τ ⊆ B ⊆ {U | τ.IsOpen U}. The informal
+    account is the companion note CARDB.md in this repository. The Lean
+    source was written by AI agents under the direction and review of the
+    author. There is no sorry outside the deliberate holes in
+    Challenge.lean, no project-defined axiom, and Mathlib is the only
+    Lake dependency.
   authors:
     - "Lars Warren Ericson"
   license: "Apache-2.0"
@@ -31,18 +37,38 @@ classification:
 
 status:
   scope: >-
-    Complete, with no unproved step. The identity is stated and proved for
-    every finite type α with decidable equality, including the empty type.
-    Nothing is assumed from the literature; the compared theorem is proved
-    from Mathlib alone.
-  # The proof development contains no sorry at all. The only sorry in the
-  # repository is the deliberate placeholder in Challenge.lean, which these
+    Complete, with no unproved step. The identity, the small-N table
+    through N = 3, the sandwich bound for N ≥ 2, and discrete dominance
+    for N ≥ 10 are stated and proved for every finite type α (the
+    identity omits DecidableEq; the table and bounds keep it). The empty
+    type is included. Nothing is assumed from the literature; the
+    compared family is proved from Mathlib alone.
+  # The proof development contains no sorry at all. The only sorries in the
+  # repository are the deliberate placeholders in Challenge.lean, which these
   # counts exclude by convention.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: ["propext", "Classical.choice", "Quot.sound"]
   main_results:
     - declaration: "card_valid_bases"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
+    - declaration: "card_valid_bases_small"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
+    - declaration: "card_valid_bases_bounds"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
+    - declaration: "card_valid_bases_dominated"
       file: "Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
@@ -79,7 +105,8 @@ sources:
       `formalizes` for following an existing source. The note carries the
       definitions, the fiber lemma, the exact sum, a small-N table, and the
       asymptotic remarks. Challenge.lean is checked against the identity
-      boxed in that note.
+      boxed in that note, together with the small-N table and the
+      discrete-dominance sandwich.
 
   - title: "Diskrete Räume"
     authors: ["P. Alexandrov"]
@@ -126,7 +153,9 @@ automation:
       framework: "Cursor"
       role: >-
         Primary agent for the Lean 4 / Mathlib formalization of the fiber
-        identity (CARDB.lean), lake build repair, and drafting of CARDB.md.
+        identity (CARDB.lean), the small-N table (CARDB/SmallN.lean), the
+        dominance bounds (CARDB/Asymptotics.lean), lake build repair, and
+        drafting of CARDB.md.
         Used in the Cursor agent environment at the High reasoning tier and
         Fast speed variant. Generated Lean was provisional until it compiled
         under the pinned toolchain (leanprover/lean4:v4.30.0).
@@ -176,14 +205,15 @@ limitations:
     performed. The identity is presented in the companion note CARDB.md;
     whether an equivalent count appears elsewhere is unknown.
   - >-
-    The compared theorem depends on propext, Classical.choice and Quot.sound,
+    The compared theorems depend on propext, Classical.choice and Quot.sound,
     and on nothing else. Choice enters because IsOpen is not a decidable
     predicate, so the Fintype instances on topologies and the fiber-cardinality
-    argument use it. There is no sorry outside the deliberate hole in
+    argument use it. There is no sorry outside the deliberate holes in
     Challenge.lean, no project-defined axiom, and no native_decide.
   - >-
-    Challenge.lean states the result but does not prove it; that is the
-    Comparator convention, and Solution.lean / CARDB.lean supply the proof.
+    Challenge.lean states the family but does not prove it; that is the
+    Comparator convention, and Solution.lean / CARDB.lean / CARDB.SmallN /
+    CARDB.Asymptotics supply the proofs.
 
 alignment:
   namespace: ""
@@ -193,9 +223,32 @@ alignment:
       module: "Challenge (statement), Solution / CARDB (proof)"
       status: proved
       note: >-
-        The statement of record, compared by Comparator. Challenge.lean states
-        it with a sorry; CARDB.lean discharges it from the fiber equivalence
-        and the partition of ValidBasis by generateFrom.
+        The identity, compared by Comparator. Challenge.lean states it with a
+        sorry; CARDB.lean discharges it from the fiber equivalence and the
+        partition of ValidBasis by generateFrom.
+
+    - source: "The small-N table #(0)=2, #(1)=2, #(2)=10, #(3)=142 (CARDB.md, Evaluation for Small N)"
+      lean: "card_valid_bases_small"
+      module: "Challenge (statement), Solution / CARDB.SmallN (proof)"
+      status: proved
+      note: >-
+        Compared by Comparator. Kernel-reducible bit-mask enumeration of
+        families of subsets of Fin n, bridged to ValidBasis.
+
+    - source: "The sandwich 2^(2^N−N) ≤ #(N) ≤ 2^(2^N−N) + 2^(N^2 + 3·2^(N−2)) for N ≥ 2 (CARDB.md, Asymptotics)"
+      lean: "card_valid_bases_bounds"
+      module: "Challenge (statement), Solution / CARDB.Asymptotics (proof)"
+      status: proved
+      note: >-
+        Compared by Comparator. Formalizes the displayed sandwich using the
+        N^2 topology bound (weaker than the informal 2^{N(N−1)} count of
+        reflexive relations, and enough for dominance).
+
+    - source: "For N ≥ 10, #(N) ≤ 2 · 2^(2^N−N) (CARDB.md, Asymptotics)"
+      lean: "card_valid_bases_dominated"
+      module: "Challenge (statement), Solution / CARDB.Asymptotics (proof)"
+      status: proved
+      note: "Compared by Comparator. The error term is at most the discrete fiber."
 
     - source: "A family is a basis iff it covers and satisfies the local intersection axiom (CARDB.md, Introduction)"
       lean: "IsBasis"

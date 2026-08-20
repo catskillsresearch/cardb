@@ -13,9 +13,11 @@ import Mathlib.Logic.Equiv.Sum
 /-!
 # The number of topological bases of a finite set
 
-This is the statement of record for a Palomar submission. It states one theorem,
-`card_valid_bases`, and the definitions that theorem mentions. It imports only
-Mathlib. The proofs are in `CARDB.lean` and are compared against this file by
+This is the statement of record for a Palomar submission. It states the
+compared family (`card_valid_bases`, the small-\(N\) table, the sandwich
+bound, and discrete dominance) and the definitions those theorems mention.
+It imports only Mathlib. The proofs are in `CARDB.lean`, `CARDB/SmallN.lean`
+and `CARDB/Asymptotics.lean`, and are compared against this file by
 Comparator.
 
 ## Informal claim
@@ -46,15 +48,26 @@ $$
 that sum. Here `opensOf τ` is the set of `τ`-open sets (so
 `ncard (opensOf τ)` is `|τ|`) and `minimalBasis τ` is `M_τ`.
 
-The compared theorem is parameterized by `[Fintype α]` only (`DecidableEq`
-is omitted, as in `CARDB.lean`). The empty type is included. It depends on
+The discrete topology contributes \(2^{2^N-N}\) bases. Every other
+topology on an \(N\)-element set with \(N\ge 2\) has at most
+\(3\cdot 2^{N-2}\) open sets, and there are at most \(2^{N^2}\)
+topologies, which gives the sandwich
+`card_valid_bases_bounds`. For \(N\ge 10\) the error term is at most
+the discrete term (`card_valid_bases_dominated`). Kernel-reducible
+enumeration gives the exact table
+`#(0)=2`, `#(1)=2`, `#(2)=10`, `#(3)=142` (`card_valid_bases_small`).
+
+The identity is parameterized by `[Fintype α]` only (`DecidableEq` is
+omitted, as in `CARDB.lean`). The table and bounds keep `[DecidableEq α]`.
+The empty type is included. Every compared theorem depends on
 `propext`, `Classical.choice` and `Quot.sound` only.
 
 ## How to read this file
 
 The definitions below are the vocabulary of the claim. A reader who wants to
 check *what* has been proved should read this file and need not read anything
-else. `Solution.lean` imports the sorry-free development in `CARDB.lean`.
+else. `Solution.lean` imports the sorry-free development in `CARDB.lean`,
+`CARDB.SmallN` and `CARDB.Asymptotics`.
 -/
 
 open Set TopologicalSpace
@@ -113,4 +126,28 @@ theorem card_valid_bases :
     Fintype.card (ValidBasis α) =
       ∑ τ : TopologicalSpace α,
         2 ^ (ncard (opensOf τ) - ncard (minimalBasis τ)) := by
+  sorry
+
+omit [Fintype α] [DecidableEq α] in
+/-- Exact table: `#(0) = 2`, `#(1) = 2`, `#(2) = 10`, `#(3) = 142`. -/
+theorem card_valid_bases_small :
+    Fintype.card (ValidBasis (Fin 0)) = 2 ∧
+    Fintype.card (ValidBasis (Fin 1)) = 2 ∧
+    Fintype.card (ValidBasis (Fin 2)) = 10 ∧
+    Fintype.card (ValidBasis (Fin 3)) = 142 := by
+  sorry
+
+/-- Sandwich: the discrete fiber is a lower bound, and for `N ≥ 2` the
+    remaining fibers are at most `2^(N^2 + 3 * 2^(N-2))`. -/
+theorem card_valid_bases_bounds (hN : 2 ≤ Fintype.card α) :
+    2 ^ (2 ^ Fintype.card α - Fintype.card α) ≤ Fintype.card (ValidBasis α) ∧
+    Fintype.card (ValidBasis α) ≤
+      2 ^ (2 ^ Fintype.card α - Fintype.card α) +
+        2 ^ (Fintype.card α ^ 2 + 3 * 2 ^ (Fintype.card α - 2)) := by
+  sorry
+
+/-- For `N ≥ 10` the total is at most twice the discrete fiber. -/
+theorem card_valid_bases_dominated (hN : 10 ≤ Fintype.card α) :
+    Fintype.card (ValidBasis α) ≤
+      2 * 2 ^ (2 ^ Fintype.card α - Fintype.card α) := by
   sorry

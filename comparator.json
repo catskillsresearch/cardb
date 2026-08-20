@@ -2,7 +2,10 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "card_valid_bases"
+    "card_valid_bases",
+    "card_valid_bases_small",
+    "card_valid_bases_bounds",
+    "card_valid_bases_dominated"
   ],
   "definition_names": [
     "IsBasis",
