@@ -9,13 +9,16 @@ import Mathlib.Data.Fintype.Powerset
 import Mathlib.Data.Set.Card
 import Mathlib.Data.Set.Finite.Basic
 import Mathlib.Logic.Equiv.Sum
+import Mathlib.Data.Real.Basic
+import Mathlib.Analysis.SpecificLimits.Basic
 
 /-!
 # The number of topological bases of a finite set
 
 This is the statement of record for a Palomar submission. It states the
 compared family (`card_valid_bases`, the small-\(N\) table, the sandwich
-bound, and discrete dominance) and the definitions those theorems mention.
+bound, discrete dominance, and `#(N) ∼ 2^(2^N-N)`) and the definitions
+those theorems mention.
 It imports only Mathlib. The proofs are in `CARDB.lean`, `CARDB/SmallN.lean`
 and `CARDB/Asymptotics.lean`, and are compared against this file by
 Comparator.
@@ -50,10 +53,12 @@ that sum. Here `opensOf τ` is the set of `τ`-open sets (so
 
 The discrete topology contributes \(2^{2^N-N}\) bases. Every other
 topology on an \(N\)-element set with \(N\ge 2\) has at most
-\(3\cdot 2^{N-2}\) open sets, and there are at most \(2^{N^2}\)
+\(3\cdot 2^{N-2}\) open sets, and there are at most \(2^{N(N-1)}\)
 topologies, which gives the sandwich
-`card_valid_bases_bounds`. For \(N\ge 10\) the error term is at most
-the discrete term (`card_valid_bases_dominated`). Kernel-reducible
+`card_valid_bases_bounds`. The relative error is at most
+\(2^{N^2-2^{N-2}}\), so `#(N) ∼ 2^{2^N-N}`
+(`card_valid_bases_asymptotic`). For \(N\ge 10\) the error term is at
+most the discrete term (`card_valid_bases_dominated`). Kernel-reducible
 enumeration gives the exact table
 `#(0)=2`, `#(1)=2`, `#(2)=10`, `#(3)=142` (`card_valid_bases_small`).
 
@@ -70,7 +75,7 @@ else. `Solution.lean` imports the sorry-free development in `CARDB.lean`,
 `CARDB.SmallN` and `CARDB.Asymptotics`.
 -/
 
-open Set TopologicalSpace
+open Set TopologicalSpace Filter Topology
 open scoped BigOperators
 
 variable {α : Type*} [Fintype α] [DecidableEq α]
@@ -138,16 +143,24 @@ theorem card_valid_bases_small :
   sorry
 
 /-- Sandwich: the discrete fiber is a lower bound, and for `N ≥ 2` the
-    remaining fibers are at most `2^(N^2 + 3 * 2^(N-2))`. -/
+    remaining fibers are at most `2^(N * (N - 1) + 3 * 2^(N-2))`. -/
 theorem card_valid_bases_bounds (hN : 2 ≤ Fintype.card α) :
     2 ^ (2 ^ Fintype.card α - Fintype.card α) ≤ Fintype.card (ValidBasis α) ∧
     Fintype.card (ValidBasis α) ≤
       2 ^ (2 ^ Fintype.card α - Fintype.card α) +
-        2 ^ (Fintype.card α ^ 2 + 3 * 2 ^ (Fintype.card α - 2)) := by
+        2 ^ (Fintype.card α * (Fintype.card α - 1) + 3 * 2 ^ (Fintype.card α - 2)) := by
   sorry
 
 /-- For `N ≥ 10` the total is at most twice the discrete fiber. -/
 theorem card_valid_bases_dominated (hN : 10 ≤ Fintype.card α) :
     Fintype.card (ValidBasis α) ≤
       2 * 2 ^ (2 ^ Fintype.card α - Fintype.card α) := by
+  sorry
+
+omit [Fintype α] [DecidableEq α] in
+/-- `#(N) ∼ 2^(2^N - N)`: the ratio tends to `1`. -/
+theorem card_valid_bases_asymptotic :
+    Tendsto (fun n : ℕ =>
+      (Fintype.card (ValidBasis (Fin n)) : ℝ) / (2 : ℝ) ^ (2 ^ n - n))
+      atTop (nhds (1 : ℝ)) := by
   sorry

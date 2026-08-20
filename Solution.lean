@@ -13,7 +13,8 @@ import CARDB.Asymptotics
 The declarations of `Challenge.lean`, proved. Importing `CARDB`,
 `CARDB.SmallN` and `CARDB.Asymptotics` supplies `card_valid_bases`,
 `card_valid_bases_small`, `card_valid_bases_bounds`,
-`card_valid_bases_dominated` and the definitions they depend on
+`card_valid_bases_dominated`, `card_valid_bases_asymptotic` and the
+definitions they depend on
 (`IsBasis`, `ValidBasis`, `opensOf`, `minimalOpen`, `minimalBasis`),
 with the same names and types as in the Challenge module. Comparator
 compares those declarations.

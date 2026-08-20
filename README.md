@@ -24,10 +24,10 @@ This repository was split from
 | `CARDB.md` | Paper (identity, fiber lemma, small-\(N\) table, bounds) — the source of truth |
 | `CARDB.lean` | Sorry-free formalization of the sum identity |
 | `CARDB/SmallN.lean` | Exact table `#(0)=2`, `#(1)=2`, `#(2)=10`, `#(3)=142` |
-| `CARDB/Asymptotics.lean` | Sandwich bound and discrete dominance for \(N\ge 10\) |
+| `CARDB/Asymptotics.lean` | Sandwich \(2^{N(N-1)}\) bound, \(\#(N)\sim 2^{2^N-N}\), and dominance for \(N\ge 10\) |
 | `Challenge.lean` | Palomar statement of record: the compared family with deliberate `sorry`s |
 | `Solution.lean` | Palomar solution module: imports `CARDB`, `CARDB.SmallN`, `CARDB.Asymptotics` |
-| `comparator.json` | Comparator config naming the four theorems and supporting definitions |
+| `comparator.json` | Comparator config naming the five theorems and supporting definitions |
 | `formalization.yaml` | Palomar / formalization.yaml v0.4 metadata and disclosures |
 | `CARDB.pdf` | Built paper (committed deliverable) |
 | `build_pdf.py` | `CARDB.md` → `CARDB.tex` → `CARDB.pdf`, Lean source inlined as an appendix |

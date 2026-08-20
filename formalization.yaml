@@ -12,8 +12,9 @@ project:
     Kernel-reducible enumeration gives the exact table #(0)=2, #(1)=2,
     #(2)=10, #(3)=142. A quantitative sandwich then shows that the
     discrete fiber 2^(2^N − N) dominates: for N ≥ 2 the remaining fibers
-    contribute at most 2^(N^2 + 3·2^(N−2)), and for N ≥ 10 the total is
-    at most twice the discrete term. The argument is a fiber
+    contribute at most 2^(N(N−1) + 3·2^(N−2)), the ratio to the discrete
+    term tends to 1, and for N ≥ 10 the total is at most twice the
+    discrete term. The argument is a fiber
     decomposition: every finite topology is Alexandrov-discrete, the
     minimal neighbourhoods generate it, and the bases generating τ are
     exactly the families B with M_τ ⊆ B ⊆ {U | τ.IsOpen U}. The informal
@@ -38,9 +39,10 @@ classification:
 status:
   scope: >-
     Complete, with no unproved step. The identity, the small-N table
-    through N = 3, the sandwich bound for N ≥ 2, and discrete dominance
-    for N ≥ 10 are stated and proved for every finite type α (the
-    identity omits DecidableEq; the table and bounds keep it). The empty
+    through N = 3, the sandwich bound for N ≥ 2, #(N) ∼ 2^(2^N−N), and
+    discrete dominance for N ≥ 10 are stated and proved for every finite
+    type α (the identity and the limit omit DecidableEq; the table and
+    bounds keep it). The empty
     type is included. Nothing is assumed from the literature; the
     compared family is proved from Mathlib alone.
   # The proof development contains no sorry at all. The only sorries in the
@@ -69,6 +71,12 @@ status:
       comparator_config: "comparator.json"
       literature_dependencies: []
     - declaration: "card_valid_bases_dominated"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
+    - declaration: "card_valid_bases_asymptotic"
       file: "Solution.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
@@ -235,20 +243,27 @@ alignment:
         Compared by Comparator. Kernel-reducible bit-mask enumeration of
         families of subsets of Fin n, bridged to ValidBasis.
 
-    - source: "The sandwich 2^(2^N−N) ≤ #(N) ≤ 2^(2^N−N) + 2^(N^2 + 3·2^(N−2)) for N ≥ 2 (CARDB.md, Asymptotics)"
+    - source: "The sandwich 2^(2^N−N) ≤ #(N) ≤ 2^(2^N−N) + 2^(N(N−1) + 3·2^(N−2)) for N ≥ 2 (CARDB.md, Asymptotics)"
       lean: "card_valid_bases_bounds"
       module: "Challenge (statement), Solution / CARDB.Asymptotics (proof)"
       status: proved
       note: >-
         Compared by Comparator. Formalizes the displayed sandwich using the
-        N^2 topology bound (weaker than the informal 2^{N(N−1)} count of
-        reflexive relations, and enough for dominance).
+        elementary 2^{N(N−1)} count of reflexive relations.
 
     - source: "For N ≥ 10, #(N) ≤ 2 · 2^(2^N−N) (CARDB.md, Asymptotics)"
       lean: "card_valid_bases_dominated"
       module: "Challenge (statement), Solution / CARDB.Asymptotics (proof)"
       status: proved
       note: "Compared by Comparator. The error term is at most the discrete fiber."
+
+    - source: "#(N) ∼ 2^(2^N−N) as N → ∞ (CARDB.md, Asymptotics)"
+      lean: "card_valid_bases_asymptotic"
+      module: "Challenge (statement), Solution / CARDB.Asymptotics (proof)"
+      status: proved
+      note: >-
+        Compared by Comparator. The ratio of #(Fin n) to 2^(2^n−n) tends
+        to 1; the relative error is at most 2^(n^2 − 2^(n−2)).
 
     - source: "A family is a basis iff it covers and satisfies the local intersection axiom (CARDB.md, Introduction)"
       lean: "IsBasis"

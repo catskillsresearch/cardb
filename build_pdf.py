@@ -45,6 +45,10 @@ EXTRA_LITERATE = r"""    {ä}{{\"{a}}}1
     {›}{{'}}1
     {∈}{{\ensuremath{\in}}}1
     {·}{{\ensuremath{\cdot}}}1
+    {ℝ}{{\ensuremath{\mathbb{R}}}}1
+    {ℕ}{{\ensuremath{\mathbb{N}}}}1
+    {∼}{{\ensuremath{\sim}}}1
+    {≃}{{\ensuremath{\simeq}}}1
 """
 
 EXTRA_UNICODECHAR = r"""
@@ -56,6 +60,10 @@ EXTRA_UNICODECHAR = r"""
 \newunicodechar{›}{'}
 \newunicodechar{∈}{\ensuremath{\in}}
 \newunicodechar{·}{\ensuremath{\cdot}}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{∼}{\ensuremath{\sim}}
+\newunicodechar{≃}{\ensuremath{\simeq}}
 \newunicodechar{⦃}{\textbraceleft\textbraceleft}
 \newunicodechar{⦄}{\textbraceright\textbraceright}
 """
@@ -209,7 +217,7 @@ def build_appendix() -> str:
             "",
             listing_block(
                 LEAN_ASYMP,
-                r"The sandwich bound and discrete dominance for $N\ge 10$",
+                r"The $2^{N(N-1)}$ sandwich, $\#(N)\sim 2^{2^N-N}$, and dominance for $N\ge 10$",
             ),
         ]
     )

@@ -5,7 +5,8 @@
     "card_valid_bases",
     "card_valid_bases_small",
     "card_valid_bases_bounds",
-    "card_valid_bases_dominated"
+    "card_valid_bases_dominated",
+    "card_valid_bases_asymptotic"
   ],
   "definition_names": [
     "IsBasis",

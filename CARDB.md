@@ -317,7 +317,7 @@ theorem card_valid_bases :
   exact Finset.sum_congr rfl fun τ _ => card_fiber τ
 ```
 
-`#print axioms card_valid_bases` reports `{propext, Classical.choice, Quot.sound}`. The same three axioms are the only ones used by `card_valid_bases_small`, `card_valid_bases_bounds` and `card_valid_bases_dominated`. Choice enters because `IsOpen` is not a decidable predicate, so the `Fintype` instances on topologies and `card_fiber` use it. The small-$N$ table is `decide` on a kernel-reducible bit-mask count, not `native_decide`.
+`#print axioms card_valid_bases` reports `{propext, Classical.choice, Quot.sound}`. The same three axioms are the only ones used by `card_valid_bases_small`, `card_valid_bases_bounds`, `card_valid_bases_dominated` and `card_valid_bases_asymptotic`. Choice enters because `IsOpen` is not a decidable predicate, so the `Fintype` instances on topologies and `card_fiber` use it. The small-$N$ table is `decide` on a kernel-reducible bit-mask count, not `native_decide`.
 
 ---
 
@@ -350,16 +350,16 @@ While no elementary exact formula is known, asymptotic analysis reveals that the
 
 2. **Upper Bound on Non-Discrete Fibers:**
    For $N \ge 2$, any proper subtopology $\mathcal{T} \subsetneq \mathcal{P}(S)$ has at most $|\mathcal{T}| \le \frac{3}{4} 2^N = 3 \cdot 2^{N-2}$ open sets (the Sharp--Stephen bound [6]). A topology on a finite set is determined by its specialization preorder; since a reflexive relation has $N(N-1)$ freely chosen off-diagonal entries, the elementary bound $|\operatorname{Top}(S)| \le 2^{N(N-1)}$ follows. Thus the sum of all other fibers is bounded by:
-   $$\sum_{\mathcal{T} \ne \mathcal{T}_{\text{disc}}} 2^{|\mathcal{T}| - |\mathcal{M}_\mathcal{T}|} \le 2^{N(N-1)} \cdot 2^{\frac{3}{4} 2^N - 1}$$
+   $$\sum_{\mathcal{T} \ne \mathcal{T}_{\text{disc}}} 2^{|\mathcal{T}| - |\mathcal{M}_\mathcal{T}|} \le 2^{N(N-1)+\frac{3}{4} 2^N}$$
 
 3. **Asymptotic Behavior:**
-   $$2^{2^N - N} \;\le\; \#(N) \;\le\; 2^{2^N - N} + 2^{N^2 + \frac{3}{4} 2^N}$$
+   $$2^{2^N - N} \;\le\; \#(N) \;\le\; 2^{2^N - N} + 2^{N(N-1) + \frac{3}{4} 2^N}$$
    As $N \to \infty$:
    $$\#(N) \sim 2^{2^N - N}$$
-   with relative error bounded by $O\left(2^{-\frac{1}{4} 2^N + N^2}\right) \to 0$.
-   Lean proves the displayed sandwich as `card_valid_bases_bounds` (using the
-   elementary $|\operatorname{Top}(S)|\le 2^{N^2}$ bound, which is enough) and
-   the quantitative consequence $\#(N)\le 2\cdot 2^{2^N-N}$ for $N\ge 10$ as
+   with relative error at most $2^{N^2 - 2^{N-2}}\to 0$.
+   Lean proves the displayed sandwich as `card_valid_bases_bounds`, the
+   limit as `card_valid_bases_asymptotic`, and the quantitative
+   consequence $\#(N)\le 2\cdot 2^{2^N-N}$ for $N\ge 10$ as
    `card_valid_bases_dominated`.
 
 ---
@@ -400,8 +400,9 @@ The development is at
 [`github.com/catskillsresearch/cardb`](https://github.com/catskillsresearch/cardb).
 Run `lake build` for the sorry-free formalization.
 `Challenge.lean` is the Palomar statement of record for the compared family
-`card_valid_bases`, `card_valid_bases_small`, `card_valid_bases_bounds` and
-`card_valid_bases_dominated` (Mathlib imports only; deliberate `sorry`s);
+`card_valid_bases`, `card_valid_bases_small`, `card_valid_bases_bounds`,
+`card_valid_bases_dominated` and `card_valid_bases_asymptotic`
+(Mathlib imports only; deliberate `sorry`s);
 `Solution.lean` imports `CARDB`, `CARDB.SmallN` and `CARDB.Asymptotics`;
 `comparator.json` and `formalization.yaml` are the Comparator and disclosure metadata.
 Run `python3 build_pdf.py` to regenerate `CARDB.tex` and `CARDB.pdf` (title page, author, affiliation, and this GitHub path).

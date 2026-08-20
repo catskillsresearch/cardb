@@ -7,6 +7,7 @@ Authors: Lars Warren Ericson.
 import CARDB
 import Mathlib.Data.Fintype.Prod
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 
@@ -15,14 +16,15 @@ import Mathlib.Tactic.Linarith
 
 The discrete topology contributes `2^(2^N - N)` bases. Every other
 topology on an `N`-element set with `N ≥ 2` has at most `3 * 2^(N-2)`
-open sets, and there are at most `2^(N^2)` topologies, so
+open sets, and there are at most `2^(N * (N - 1))` topologies, so
 
 ```
-2^(2^N - N) ≤ #(N) ≤ 2^(2^N - N) + 2^(N^2 + 3 * 2^(N-2)).
+2^(2^N - N) ≤ #(N) ≤ 2^(2^N - N) + 2^(N * (N - 1) + 3 * 2^(N-2)).
 ```
 
-For `N ≥ 10` the error term is at most the discrete term, hence
-`#(N) ≤ 2 * 2^(2^N - N)`.
+The relative error is at most `2^(N^2 - 2^(N-2))`, hence
+`#(N) ∼ 2^(2^N - N)`. For `N ≥ 10` the error term is at most the
+discrete term, so `#(N) ≤ 2 * 2^(2^N - N)`.
 -/
 
 open Set TopologicalSpace
@@ -194,11 +196,43 @@ lemma specSet_injective :
   exact (generateFrom_minimalBasis t₁).symm.trans
     ((congrArg generateFrom this).trans (generateFrom_minimalBasis t₂))
 
+/-- Off-diagonal specialization pairs. The diagonal is always present. -/
+def specOffDiag (t : TopologicalSpace α) : Set {p : α × α // p.1 ≠ p.2} :=
+  {p | @Specializes α t p.1.1 p.1.2}
+
+lemma specOffDiag_injective :
+    Function.Injective (specOffDiag : TopologicalSpace α → Set {p : α × α // p.1 ≠ p.2}) := by
+  intro t₁ t₂ h
+  refine specSet_injective ?_
+  ext p
+  obtain ⟨x, y⟩ := p
+  by_cases hxy : x = y
+  · subst hxy
+    exact iff_of_true (@specializes_rfl α t₁ x) (@specializes_rfl α t₂ x)
+  · simpa [specSet, specOffDiag] using (Set.ext_iff.mp h ⟨(x, y), hxy⟩)
+
+lemma card_off_diag :
+    Fintype.card {p : α × α // p.1 ≠ p.2} =
+      Fintype.card α * (Fintype.card α - 1) := by
+  have hdiag : Fintype.card {p : α × α // p.1 = p.2} = Fintype.card α :=
+    Fintype.card_congr
+      { toFun := fun p : {p : α × α // p.1 = p.2} => p.1.1
+        invFun := fun x => ⟨(x, x), rfl⟩
+        left_inv := fun p => Subtype.ext (Prod.ext rfl p.2)
+        right_inv := fun _ => rfl }
+  have hne : {p : α × α // p.1 ≠ p.2} ≃ {p : α × α // ¬(p.1 = p.2)} :=
+    Equiv.subtypeEquivRight fun _ => Iff.rfl
+  rw [Fintype.card_congr hne, Fintype.card_subtype_compl (fun p : α × α => p.1 = p.2),
+    Fintype.card_prod, hdiag]
+  exact (Nat.mul_sub_one (Fintype.card α) (Fintype.card α)).symm
+
 lemma card_topologies_le :
-    Fintype.card (TopologicalSpace α) ≤ 2 ^ (Fintype.card α ^ 2) := by
+    Fintype.card (TopologicalSpace α) ≤
+      2 ^ (Fintype.card α * (Fintype.card α - 1)) := by
   have h := Fintype.card_le_of_injective
-    (specSet : TopologicalSpace α → Set (α × α)) specSet_injective
-  rwa [Fintype.card_set, Fintype.card_prod, ← pow_two] at h
+    (specOffDiag : TopologicalSpace α → Set {p : α × α // p.1 ≠ p.2})
+    specOffDiag_injective
+  rwa [Fintype.card_set, card_off_diag] at h
 
 lemma card_fiber_le_of_ne_bot {t : TopologicalSpace α} (ht : t ≠ ⊥) :
     Fintype.card (Fiber t) ≤ 2 ^ (3 * 2 ^ (Fintype.card α - 2)) := by
@@ -210,7 +244,7 @@ theorem card_valid_bases_bounds (hN : 2 ≤ Fintype.card α) :
     2 ^ (2 ^ Fintype.card α - Fintype.card α) ≤ Fintype.card (ValidBasis α) ∧
     Fintype.card (ValidBasis α) ≤
       2 ^ (2 ^ Fintype.card α - Fintype.card α) +
-        2 ^ (Fintype.card α ^ 2 + 3 * 2 ^ (Fintype.card α - 2)) := by
+        2 ^ (Fintype.card α * (Fintype.card α - 1) + 3 * 2 ^ (Fintype.card α - 2)) := by
   refine ⟨card_valid_bases_ge_discrete, ?_⟩
   rw [card_valid_bases_sum_fiber]
   have hsplit :
@@ -234,11 +268,11 @@ theorem card_valid_bases_bounds (hN : 2 ≤ Fintype.card α) :
     exact this
   have hcard :
       (Finset.univ.filter (fun τ : TopologicalSpace α => τ ≠ ⊥)).card ≤
-        2 ^ (Fintype.card α ^ 2) :=
+        2 ^ (Fintype.card α * (Fintype.card α - 1)) :=
     (Finset.card_filter_le _ _).trans (by simpa using card_topologies_le)
   have : (Finset.univ.filter (fun τ : TopologicalSpace α => τ ≠ ⊥)).card *
       2 ^ (3 * 2 ^ (Fintype.card α - 2)) ≤
-        2 ^ (Fintype.card α ^ 2 + 3 * 2 ^ (Fintype.card α - 2)) := by
+        2 ^ (Fintype.card α * (Fintype.card α - 1) + 3 * 2 ^ (Fintype.card α - 2)) := by
     rw [pow_add]
     exact Nat.mul_le_mul_right _ hcard
   exact Nat.add_le_add_left (hsum.trans this) _
@@ -289,10 +323,12 @@ theorem card_valid_bases_dominated (hN : 10 ≤ Fintype.card α) :
   obtain ⟨_, hhi⟩ := card_valid_bases_bounds h2
   refine hhi.trans ?_
   set N := Fintype.card α
-  have hgap : N ^ 2 + 3 * 2 ^ (N - 2) ≤ 2 ^ N - N := by
+  have hgap : N * (N - 1) + 3 * 2 ^ (N - 2) ≤ 2 ^ N - N := by
     have hpoly := two_pow_poly_le N hN
-    have : N ^ 2 + 3 * 2 ^ (N - 2) + N ≤ 2 ^ (N - 2) + 3 * 2 ^ (N - 2) := by
-      linarith
+    have hsq : N * (N - 1) + N = N ^ 2 := by
+      rw [Nat.mul_sub_one, Nat.sub_add_cancel (Nat.le_mul_self N), sq]
+    have : N * (N - 1) + 3 * 2 ^ (N - 2) + N ≤ 2 ^ (N - 2) + 3 * 2 ^ (N - 2) := by
+      linarith [hsq]
     have hsum : 2 ^ (N - 2) + 3 * 2 ^ (N - 2) = 4 * 2 ^ (N - 2) := by
       ring
     have h4 : 4 * 2 ^ (N - 2) = 2 ^ N := by
@@ -300,11 +336,87 @@ theorem card_valid_bases_dominated (hN : 10 ≤ Fintype.card α) :
       have hfour : (4 : ℕ) = 2 ^ 2 := by decide
       rw [hfour, ← pow_add, show 2 + (N - 2) = N by omega]
     exact Nat.le_sub_of_add_le (this.trans_eq (hsum.trans h4))
-  have herr : 2 ^ (N ^ 2 + 3 * 2 ^ (N - 2)) ≤ 2 ^ (2 ^ N - N) :=
+  have herr : 2 ^ (N * (N - 1) + 3 * 2 ^ (N - 2)) ≤ 2 ^ (2 ^ N - N) :=
     Nat.pow_le_pow_right (by decide) hgap
-  have : 2 ^ (2 ^ N - N) + 2 ^ (N ^ 2 + 3 * 2 ^ (N - 2)) ≤
+  have : 2 ^ (2 ^ N - N) + 2 ^ (N * (N - 1) + 3 * 2 ^ (N - 2)) ≤
       2 ^ (2 ^ N - N) + 2 ^ (2 ^ N - N) :=
     Nat.add_le_add_left herr _
   have h2D : 2 ^ (2 ^ N - N) + 2 ^ (2 ^ N - N) = 2 * 2 ^ (2 ^ N - N) := by
     rw [two_mul]
   exact this.trans_eq h2D
+
+open Filter Topology
+
+lemma remainder_exp_add_n_le (n : ℕ) (hn : 10 ≤ n) :
+    n * (n - 1) + 3 * 2 ^ (n - 2) + n ≤ 2 ^ n - n := by
+  have hpoly := two_pow_poly_le n hn
+  have hsq : n * (n - 1) + n = n ^ 2 := by
+    rw [Nat.mul_sub_one, Nat.sub_add_cancel (Nat.le_mul_self n), sq]
+  have h4 : 2 ^ (n - 2) + 3 * 2 ^ (n - 2) = 2 ^ n := by
+    have : 2 ^ (n - 2) + 3 * 2 ^ (n - 2) = 4 * 2 ^ (n - 2) := by ring
+    have hfour : (4 : ℕ) = 2 ^ 2 := by decide
+    rw [this, hfour, ← pow_add, show 2 + (n - 2) = n by omega]
+  have : n ^ 2 + 3 * 2 ^ (n - 2) + n ≤ 2 ^ n := by
+    have := Nat.add_le_add hpoly (Nat.le_refl (3 * 2 ^ (n - 2)))
+    convert this using 1
+    · ring
+    · exact h4.symm
+  have hleft : n * (n - 1) + 3 * 2 ^ (n - 2) + n + n = n ^ 2 + 3 * 2 ^ (n - 2) + n := by
+    rw [← hsq]; ac_rfl
+  have : n * (n - 1) + 3 * 2 ^ (n - 2) + n + n ≤ 2 ^ n := by
+    rwa [hleft]
+  exact Nat.le_sub_of_add_le this
+
+lemma card_valid_bases_ratio_le_one_add_half_pow (n : ℕ) (hn : 10 ≤ n) :
+    (Fintype.card (ValidBasis (Fin n)) : ℝ) / (2 : ℝ) ^ (2 ^ n - n) ≤
+      1 + (1 / 2 : ℝ) ^ n := by
+  have h2 : 2 ≤ n := le_trans (by decide : 2 ≤ 10) hn
+  have hN : 2 ≤ Fintype.card (Fin n) := by simpa using h2
+  obtain ⟨_, hbound⟩ := card_valid_bases_bounds (α := Fin n) hN
+  have hDpos : (0 : ℝ) < (2 : ℝ) ^ (2 ^ n - n) := pow_pos (by norm_num) _
+  have hC :
+      (Fintype.card (ValidBasis (Fin n)) : ℝ) ≤
+        (2 : ℝ) ^ (2 ^ n - n) + (2 : ℝ) ^ (n * (n - 1) + 3 * 2 ^ (n - 2)) := by
+    have := (Nat.cast_le (α := ℝ)).mpr hbound
+    simpa [Nat.cast_add, Nat.cast_pow, Fintype.card_fin] using this
+  have hdiv := div_le_div_of_nonneg_right hC hDpos.le
+  have hsplit :
+      ((2 : ℝ) ^ (2 ^ n - n) + (2 : ℝ) ^ (n * (n - 1) + 3 * 2 ^ (n - 2))) /
+          (2 : ℝ) ^ (2 ^ n - n) =
+        1 + (2 : ℝ) ^ (n * (n - 1) + 3 * 2 ^ (n - 2)) / (2 : ℝ) ^ (2 ^ n - n) := by
+    field_simp [hDpos.ne']
+  refine hdiv.trans ((le_of_eq hsplit).trans (add_le_add le_rfl ?_))
+  set a := n * (n - 1) + 3 * 2 ^ (n - 2)
+  set b := 2 ^ n - n
+  have hab : a + n ≤ b := remainder_exp_add_n_le n hn
+  have hmon :
+      (2 : ℝ) ^ a / (2 : ℝ) ^ b ≤ (2 : ℝ) ^ a / (2 : ℝ) ^ (a + n) :=
+    div_le_div_of_nonneg_left (pow_nonneg (by norm_num) _)
+      (pow_pos (by norm_num) _)
+      (pow_le_pow_right₀ (by norm_num : (1 : ℝ) ≤ 2) hab)
+  have hsimp : (2 : ℝ) ^ a / (2 : ℝ) ^ (a + n) = (1 / 2 : ℝ) ^ n := by
+    rw [pow_add (2 : ℝ) a n, div_mul_cancel_left₀ (pow_ne_zero _ (by norm_num : (2 : ℝ) ≠ 0)),
+      one_div, inv_pow]
+  exact hmon.trans_eq hsimp
+
+omit [Fintype α] [DecidableEq α] in
+/-- `#(N) ∼ 2^(2^N - N)`: the ratio tends to `1`. -/
+theorem card_valid_bases_asymptotic :
+    Tendsto (fun n : ℕ =>
+      (Fintype.card (ValidBasis (Fin n)) : ℝ) / (2 : ℝ) ^ (2 ^ n - n))
+      atTop (nhds (1 : ℝ)) := by
+  have hge : ∀ n,
+      1 ≤ (Fintype.card (ValidBasis (Fin n)) : ℝ) / (2 : ℝ) ^ (2 ^ n - n) := by
+    intro n
+    refine (one_le_div (pow_pos (by norm_num : (0 : ℝ) < 2) (2 ^ n - n))).mpr ?_
+    have h := card_valid_bases_ge_discrete (α := Fin n)
+    have := (Nat.cast_le (α := ℝ)).mpr (by simpa using h)
+    simpa [Nat.cast_pow] using this
+  have hhalf : Tendsto (fun n : ℕ => (1 / 2 : ℝ) ^ n) atTop (nhds 0) :=
+    tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num)
+  have hupper : Tendsto (fun n : ℕ => (1 : ℝ) + (1 / 2 : ℝ) ^ n) atTop (nhds 1) := by
+    simpa using (tendsto_const_nhds : Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (nhds 1)).add hhalf
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (nhds 1)) hupper
+    (Eventually.of_forall hge)
+    (eventually_atTop.2 ⟨10, fun n hn => card_valid_bases_ratio_le_one_add_half_pow n hn⟩)
