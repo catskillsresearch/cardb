@@ -1,3 +1,5 @@
+[![Lean 4](https://img.shields.io/github/actions/workflow/status/catskillsresearch/cardb/build.yml?label=Lean%204)](https://github.com/catskillsresearch/cardb/actions/workflows/build.yml)
+
 # CARDB
 
 The number of distinct topological bases of a finite set of size \(N\).
