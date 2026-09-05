@@ -35,6 +35,9 @@ PREAMBLE = HERE / "scripts" / "tex_preamble_arxiv.tex"
 AUTHOR = "Lars Warren Ericson"
 COMPANY = "Catskills Research Company"
 GITHUB_URL = r"https://github.com/catskillsresearch/cardb"
+PALOMAR_URL = (
+    r"https://palomar-registry.org/entry?id=PALOMAR-2026-08-20-000003&version=1"
+)
 ORCID = "0000-0001-8299-9361"
 EMAIL = "lars.ericson@catskillsresearch.com"
 
@@ -160,8 +163,8 @@ def build_title_page(title_tex: str, abstract_tex: str) -> str:
             r"\title{\textbf{" + title_tex + "}}",
             "",
             r"\author[1]{\textbf{" + AUTHOR + "}}",
+            r"\affil[1]{ORCID: " + ORCID + "}",
             r"\affil[1]{" + COMPANY + "}",
-            r"\affil[1]{\url{" + GITHUB_URL + "}}",
             r"\affil[1]{\texttt{" + EMAIL + "}}",
             "",
             r"\date{\today}",
@@ -171,7 +174,8 @@ def build_title_page(title_tex: str, abstract_tex: str) -> str:
             "",
             r"\begin{center}",
             r"  \small",
-            r"  \textbf{ORCID:} " + ORCID,
+            r"  \textbf{Github:} \url{" + GITHUB_URL + r"} \\",
+            r"  \textbf{Palomar Registration:} \url{" + PALOMAR_URL + "}",
             r"\end{center}",
             "",
             r"\begin{abstract}",

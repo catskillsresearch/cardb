@@ -17,5 +17,7 @@ so the statement of record and Palomar metadata live here. The old path is
 historical only. Further work belongs in
 [`catskillsresearch/cardb`](https://github.com/catskillsresearch/cardb).
 
-Palomar reviews and, if registered, preserves a pinned commit of *this*
-repository. It does not archive `scott_models`.
+This formalization is registered in the Palomar registry as
+[PALOMAR-2026-08-20-000003](https://palomar-registry.org/entry?id=PALOMAR-2026-08-20-000003&version=1)
+(version 1). Palomar preserves a pinned commit of *this* repository. It does
+not archive `scott_models`.

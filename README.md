@@ -20,7 +20,9 @@ open neighborhoods (`nhdsKer` on a finite Alexandrov space). Bases generating
 This repository is the continuation of work that began as
 [`scott_models/CARDB`](https://github.com/catskillsresearch/scott_models/tree/main/CARDB)
 and was split out because it is not part of that project's intent. See
-`PROVENANCE.md`. The old path is historical.
+`PROVENANCE.md`. The old path is historical. This package is registered with
+[Palomar](https://palomar-registry.org/about) as
+[PALOMAR-2026-08-20-000003](https://palomar-registry.org/entry?id=PALOMAR-2026-08-20-000003&version=1).
 
 ## Files
 
@@ -42,8 +44,8 @@ and was split out because it is not part of that project's intent. See
 | `NOTICE` | Copyright and third-party attribution |
 
 `CARDB.tex` is generated and git-ignored. The title page lists the author,
-Catskills Research Company, and
-<https://github.com/catskillsresearch/cardb>.
+ORCID, Catskills Research Company, and the GitHub and Palomar registration
+URLs.
 
 ## Build the Lean
 
