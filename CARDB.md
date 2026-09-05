@@ -398,6 +398,12 @@ full responsibility for them.
 
 The development is at
 [`github.com/catskillsresearch/cardb`](https://github.com/catskillsresearch/cardb).
+It is a split of the former
+[`scott_models/CARDB`](https://github.com/catskillsresearch/scott_models/tree/main/CARDB)
+directory (same author and license; not a reimplementation). The parent
+repository is about Scott models; this package does not belong there.
+`PROVENANCE.md` and `formalization.yaml` (`related_formalizations`) record
+that migration.
 Run `lake build` for the sorry-free formalization.
 `Challenge.lean` is the Palomar statement of record for the compared family
 `card_valid_bases`, `card_valid_bases_small`, `card_valid_bases_bounds`,

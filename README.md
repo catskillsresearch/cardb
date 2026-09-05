@@ -1,4 +1,5 @@
 [![Lean 4](https://img.shields.io/github/actions/workflow/status/catskillsresearch/cardb/build.yml?label=Lean%204)](https://github.com/catskillsresearch/cardb/actions/workflows/build.yml)
+[![Palomar](https://img.shields.io/badge/Palomar-2026--08--20--000003-0f766e.svg)](https://palomar-registry.org/entry?id=PALOMAR-2026-08-20-000003&version=1)
 
 # CARDB
 
@@ -16,8 +17,10 @@ open neighborhoods (`nhdsKer` on a finite Alexandrov space). Bases generating
 \(\mathcal{T}\) are exactly the families with
 \(\mathcal{M}_{\mathcal{T}} \subseteq \mathcal{B} \subseteq \mathcal{T}\).
 
-This repository was split from
-[`scott_models/CARDB`](https://github.com/catskillsresearch/scott_models/tree/main/CARDB).
+This repository is the continuation of work that began as
+[`scott_models/CARDB`](https://github.com/catskillsresearch/scott_models/tree/main/CARDB)
+and was split out because it is not part of that project's intent. See
+`PROVENANCE.md`. The old path is historical.
 
 ## Files
 
@@ -31,6 +34,7 @@ This repository was split from
 | `Solution.lean` | Palomar solution module: imports `CARDB`, `CARDB.SmallN`, `CARDB.Asymptotics` |
 | `comparator.json` | Comparator config naming the five theorems and supporting definitions |
 | `formalization.yaml` | Palomar / formalization.yaml v0.4 metadata and disclosures |
+| `PROVENANCE.md` | Split from `scott_models/CARDB`; this repo is the continuation |
 | `CARDB.pdf` | Built paper (committed deliverable) |
 | `build_pdf.py` | `CARDB.md` → `CARDB.tex` → `CARDB.pdf`, Lean source inlined as an appendix |
 | `scripts/tex_preamble_arxiv.tex` | Listings / unicode preamble used by the PDF build |

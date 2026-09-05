@@ -149,7 +149,19 @@ sources:
       informal note's comparison with |Top(S)|; the compared theorem counts
       bases, not topologies.
 
-related_formalizations: []
+related_formalizations:
+  - id: "https://github.com/catskillsresearch/scott_models/tree/main/CARDB"
+    relationship: supersedes
+    note: >-
+      This repository is a split and migration of the CARDB directory that
+      previously lived in catskillsresearch/scott_models. That parent
+      repository is about Scott models; CARDB was parked there for
+      convenience and is not part of that project's intent. The present
+      repo is the same author's continuation of that directory (same
+      Apache-2.0 development, first commit a4d3fc0), not a reimplementation
+      of an independent formalization. The old path is historical; this
+      repository is the substantive development Palomar should record.
+      See PROVENANCE.md.
 
 # ---------------------------------------------------------------------------
 # How this was produced.
